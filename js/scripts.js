@@ -3,17 +3,17 @@ function PlaceList() {
   this.currentId = 0;
 };
 
-PlaceList.prototype.assignId = function() {
+PlaceList.prototype.assignId = function () {
   this.currentId += 1;
   return this.currentId;
 };
 
-PlaceList.prototype.addPlace = function(place) {
+PlaceList.prototype.addPlace = function (place) {
   place.id = this.assignId();
   this.places[place.id] = place;
 }
 
-PlaceList.prototype.removePlace = function(id) {
+PlaceList.prototype.removePlace = function (id) {
   if (this.places[id] === undefined) {
     return false;
   }
@@ -40,33 +40,51 @@ function newPlaceAdded(e) {
   let button = document.createElement("button");
   let br = document.createElement("br");
   button.innerText = inputPlace;
-  button.id = inputPlace;
+  button.id = newPlace.id;
   document.querySelector("div#place-list").append(button);
   document.querySelector("div#place-list").append(br);
 }
 function removePlace(e) {
-e.preventDefault();
-const removeId = document.querySelector("input#removePlace-id").value;
-placeList.removePlace(removeId);
-console.log(placeList.places);
+  e.preventDefault();
+  const removeId = document.querySelector("input#removePlace-id").value;
+  const button = document.getElementById(removeId);
+  let remove = placeList.removePlace(removeId);
+  if (remove === true) {
+    button.classList.add("hidden");
+  }
 }
 
-function placeDetails() {
+
+
+function displayDetails(e) {
+  let id = e.target.id;
   let placeIds = Object.keys(placeList.places);
-  placeIds.forEach(function(ID) {
-    let placeString = "";
-    let secondaryKeys = Object.keys(placeList.places[ID]);
-    console.log("Secondary Keys: " + secondaryKeys)
-    secondaryKeys.forEach(function(key) {
-      let currentPlace = placeList.places[ID];
-      placeString = placeString.concat(key + ": " + currentPlace[key] + "\n"); 
-    });
-    console.log("Place String: " + placeString);
-});
+  let placeString = ''
+  placeIds.forEach(function (place) {
+    console.log("Place: " + place)
+    console.log("ID: " + id)
+    if (id === place) {
+      let primaryKeys = Object.keys(placeList.places[place]);
+      primaryKeys.forEach(function (key) {
+        let regEx = key.replace(/^./, key[0].toUpperCase());
+        let regExSpaced = regEx.replace(/([A-Z])/g, ' $1').trim();
+        console.log("Spaced: " + regExSpaced)
+        let currentPlace = placeList.places[place];
+        placeString = placeString.concat(regExSpaced + ": " + currentPlace[key] + "\n");
+      })
+    }
+    const display = document.querySelector("div#place-details")
+    let information = document.createElement("p")
+    information.innerText = placeString;
+    display.append(information);
+    display.classList.remove("hidden");
+    
+  });
 }
 
-window.addEventListener("load", function() {
+window.addEventListener("load", function () {
   document.querySelector("form#newPlace").addEventListener("submit", newPlaceAdded)
   document.querySelector("form#removePlace").addEventListener("submit", removePlace)
+  document.querySelector("div#place-list").addEventListener("click", displayDetails)
 });
 
