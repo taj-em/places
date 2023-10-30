@@ -47,10 +47,11 @@ function newPlaceAdded(e) {
 function removePlace(e) {
   e.preventDefault();
   const removeId = document.querySelector("input#removePlace-id").value;
-  const button = document.getElementById(removeId);
+  const div = document.getElementById(removeId);
+  console.log("Should be div: " + div);
   let remove = placeList.removePlace(removeId);
   if (remove === true) {
-    button.classList.add("hidden");
+    div.classList.add("hidden");
   }
 }
 
@@ -61,6 +62,8 @@ function displayDetails(e) {
   let placeIds = Object.keys(placeList.places);
   let placeString = ''
   placeIds.forEach(function (place) {
+    let div = document.createElement("div");
+    div.id = place;
     console.log("Place: " + place)
     console.log("ID: " + id)
     if (id === place) {
@@ -68,7 +71,6 @@ function displayDetails(e) {
       primaryKeys.forEach(function (key) {
         let regEx = key.replace(/^./, key[0].toUpperCase());
         let regExSpaced = regEx.replace(/([A-Z])/g, ' $1').trim();
-        console.log("Spaced: " + regExSpaced)
         let currentPlace = placeList.places[place];
         placeString = placeString.concat(regExSpaced + ": " + currentPlace[key] + "\n");
       })
@@ -76,9 +78,9 @@ function displayDetails(e) {
     const display = document.querySelector("div#place-details")
     let information = document.createElement("p")
     information.innerText = placeString;
-    display.append(information);
+    div.append(information);
+    display.append(div);
     display.classList.remove("hidden");
-    
   });
 }
 
