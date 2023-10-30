@@ -1,36 +1,4 @@
-function PlaceList() {
-  this.places = {};
-  this.currentId = 0;
-};
-
-PlaceList.prototype.assignId = function () {
-  this.currentId += 1;
-  return this.currentId;
-};
-
-PlaceList.prototype.addPlace = function (place) {
-  place.id = this.assignId();
-  this.places[place.id] = place;
-}
-
-PlaceList.prototype.removePlace = function (id) {
-  if (this.places[id] === undefined) {
-    return false;
-  }
-  delete this.places[id];
-  return true;
-}
-
-function Place(name, countryName, dateVisited) {
-  this.name = name;
-  this.countryName = countryName;
-  this.dateVisited = dateVisited;
-}
-
-
-let placeList = new PlaceList();
-
-function newPlaceAdded(e) {
+function getPlaceValues(e) {
   e.preventDefault();
   const inputPlace = document.querySelector("input#newPlaceName").value;
   const inputCountry = document.querySelector("input#newPlaceCountry").value;
@@ -44,18 +12,6 @@ function newPlaceAdded(e) {
   document.querySelector("div#place-list").append(button);
   document.querySelector("div#place-list").append(br);
 }
-function removePlace(e) {
-  e.preventDefault();
-  const removeId = document.querySelector("input#removePlace-id").value;
-  const div = document.getElementById(removeId);
-  console.log("Should be div: " + div);
-  let remove = placeList.removePlace(removeId);
-  if (remove === true) {
-    document.getElementById(0).setAttribute("class", "hidden");
-    div.classList.add("hidden");
-  }
-}
-
 
 
 function displayDetails(e) {
@@ -68,7 +24,7 @@ function displayDetails(e) {
     console.log("Place: " + place)
     console.log("ID: " + id)
     if (id === place) {
-      document.getElementById(id).setAttribute("id", "0");
+      document.getElementById(id).setAttribute("id", "0")
       let primaryKeys = Object.keys(placeList.places[place]);
       primaryKeys.forEach(function (key) {
         let regEx = key.replace(/^./, key[0].toUpperCase());
@@ -77,18 +33,16 @@ function displayDetails(e) {
         placeString = placeString.concat(regExSpaced + ": " + currentPlace[key] + "\n");
       })
     }
-    const display = document.querySelector("div#place-details")
-    let information = document.createElement("p")
-    information.innerText = placeString;
-    div.append(information);
-    display.append(div);
-    display.classList.remove("hidden");
-  });
-}
+  })}
+
+let newPlace = new Place(inputPlace, inputCountry, inputDate);
+placeList.addPlace(newPlace);
+
+
+
 
 window.addEventListener("load", function () {
-  document.querySelector("form#newPlace").addEventListener("submit", newPlaceAdded)
+  document.querySelector("form#newPlace").addEventListener("submit", getPlaceValues)
   document.querySelector("form#removePlace").addEventListener("submit", removePlace)
   document.querySelector("div#place-list").addEventListener("click", displayDetails)
 });
-
